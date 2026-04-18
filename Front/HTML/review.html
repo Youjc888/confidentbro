@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETHER / Dynamic Dashboard</title>
+    <style>
+        /* --- Core Variables --- */
+        :root {
+            --bg-dark: #050609;
+            --bg-panel: rgba(20, 22, 30, 0.6);
+            --primary: #38bdf8; /* Cyan */
+            --primary-dim: rgba(56, 189, 248, 0.15);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: rgba(148, 163, 184, 0.1);
+            --blur: blur(20px) saturate(180%);
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- Reset & Base --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            overflow: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            background: var(--bg-panel);
+            backdrop-filter: var(--blur);
+            border-right: 1px solid var(--border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .brand { font-size: 1.25rem; font-weight: 800; letter-spacing: -1px; color: var(--primary); }
+
+        .nav-links { margin-top: 60px; }
+        .nav-links li { margin-bottom: 10px; }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .nav-link:hover { background: var(--primary-dim); color: var(--primary); }
+        .nav-link.active { background: var(--primary-dim); color: var(--primary); border: 1px solid rgba(56,189,248,0.3); }
+
+        .status { font-size: 0.8rem; color: var(--text-muted); }
+        .status span { color: #4ade80; } /* Green dot */
+
+        /* --- Main Content Area --- */
+        .main-stage {
+            padding: 40px 60px;
+            overflow-y: auto;
+            background: radial-gradient(circle at 70% 20%, rgba(56, 189, 248, 0.08), transparent 40%);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        h1 { font-size: 2.5rem; letter-spacing: -1.5px; font-weight: 800; }
+        .subtitle { color: var(--text-muted); font-size: 1.1rem; margin-top: 5px; }
+
+        .live-clock {
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 600;
+            background: var(--primary-dim);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(56,189,248,0.2);
+        }
+
+        /* --- Useful Dashboard Grid --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .panel {
+            background: var(--bg-panel);
+            backdrop-filter: var(--blur);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            transition: var(--transition);
+        }
+        .panel:hover { border-color: rgba(56, 189, 248, 0.3); transform: translateY(-3px); }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .panel-title { font-size: 1.1rem; font-weight: 600; color: var(--text-main); }
+        .panel-icon { color: var(--primary); opacity: 0.7; }
+
+        /* Project Cards (Beautiful Element) */
+        .project-list li {
+            border-bottom: 1px solid var(--border);
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .project-list li:last-child { border: none; }
+        .proj-name { font-weight: 600; }
+        .proj-meta { color: var(--text-muted); font-size: 0.9rem; }
+        .tag {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: var(--primary-dim);
+            color: var(--primary);
+            margin-left: 10px;
+        }
+
+        /* Input Interaction (Useful Element) */
+        .quick-note {
+            width: 100%;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: inherit;
+            resize: none;
+            height: 100px;
+            margin-bottom: 15px;
+        }
+        .quick-note:focus { outline: none; border-color: var(--primary); }
+
+        .btn-save {
+            background: var(--primary);
+            color: var(--bg-dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-save:hover { opacity: 0.9; transform: scale(1.02); }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1000px) {
+            body { grid-template-columns: 1fr; }
+            .sidebar { display: none; } /* Simplified for brevity */
+            .main-stage { padding: 30px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div>
+            <div class="brand">AETHER // CORE</div>
+            <ul class="nav-links">
+                <li><a href="#" class="nav-link active">Dashboard</a></li>
+                <li><a href="#" class="nav-link">Projects</a></li>
+                <li><a href="#" class="nav-link">Analytics</a></li>
+                <li><a href="#" class="nav-link">System Settings</a></li>
+            </ul>
+        </div>
+        <div class="status">System Status: <span>● ONLINE</span></div>
+    </nav>
+
+    <main class="main-stage">
+        <header>
+            <div>
+                <h1>Welcome Back</h1>
+                <div class="subtitle">Aether Interface v1.2 / Live Session</div>
+            </div>
+            <div id="clock" class="live-clock">--:--:--</div>
+        </header>
+
+        <div class="dashboard-grid">
+            
+            <section class="panel">
+                <div class="panel-header">
+                    <h3 class="panel-title">Active Projects</h3>
+                    <span class="panel-icon"></span>
+                </div>
+                <ul class="project-list">
+                    <li>
+                        <div>
+                            <div class="proj-name">Helios Protocol</div>
+                            <div class="proj-meta">Last commit: 2h ago</div>
+                        </div>
+                        <span class="tag">Alpha</span>
+                    </li>
+                    <li>
+                        <div>
+                            <div class="proj-name">Aether UI Kit</div>
+                            <div class="proj-meta">Last commit: 1d ago</div>
+                        </div>
+                        <span class="tag">Design</span>
+                    </li>
+                    <li>
+                        <div>
+                            <div class="proj-name">Quantum Compiler</div>
+                            <div class="proj-meta">Last commit: 5d ago</div>
+                        </div>
+                        <span class="tag">Review</span>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="panel">
+                <div class="panel-header">
+                    <h3 class="panel-title">Quick Scratchpad</h3>
+                    <span class="panel-icon">✎</span>
+                </div>
+                <p class="proj-meta" style="margin-bottom: 15px;">Notes are saved locally in your browser.</p>
+                <textarea id="notesArea" class="quick-note" placeholder="Type a concept, snippet, or reminder..."></textarea>
+                <button class="btn-save" onclick="saveNote()">Save Note</button>
+            </section>
+
+            <section class="panel">
+                <div class="panel-header">
+                    <h3 class="panel-title">System Feed</h3>
+                    <span class="panel-icon">⚑</span>
+                </div>
+                <div class="project-list">
+                    <li>
+                        <div class="proj-meta">Network latency nominal: 14ms</div>
+                    </li>
+                    <li>
+                        <div class="proj-meta">Helios Protocol build successful.</div>
+                    </li>
+                    <li>
+                        <div class="proj-meta">Security audit completed (0 vulnerabilities).</div>
+                    </li>
+                </ul>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // 1. Live Clock Functionality
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock(); // Initial call
+
+        // 2. Local Storage Scratchpad
+        const notesArea = document.getElementById('notesArea');
+        
+        // Load existing note
+        notesArea.value = localStorage.getItem('aether_note') || "";
+
+        // Save note
+        function saveNote() {
+            localStorage.setItem('aether_note', notesArea.value);
+            alert("Note saved to local storage.");
+        }
+    </script>
+</body>
+</html>

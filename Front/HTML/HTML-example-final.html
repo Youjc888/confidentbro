@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>我的纯 HTML 博客示例</title>
+</head>
+<body>
+
+    <!-- 1. 头部区域 -->
+    <header>
+        <h1>张三的个人博客</h1>
+        <p>欢迎来到我的互联网角落，这里只有最纯粹的 HTML。</p>
+    </header>
+
+    <hr> <!-- 分割线 -->
+
+    <!-- 2. 导航栏 -->
+    <nav>
+        <strong>导航菜单：</strong>
+        <a href="#home">首页</a> |
+        <a href="#about">关于我</a> |
+        <a href="#contact">联系我</a>
+    </nav>
+
+    <hr>
+
+    <!-- 3. 主要内容区域 (使用表格布局演示) -->
+    <table width="100%" border="0">
+        <tr>
+            <!-- 左侧：文章列表 -->
+            <td width="70%" valign="top">
+                <main>
+                    <article>
+                        <h2>📅 第一篇：HTML 学习心得</h2>
+                        <p><small>发布时间：2026-03-19 | 作者：张三</small></p>
+                        <p>今天我开始学习 HTML，我发现它就像盖房子的骨架。虽然还没有装修（CSS），也没有通电（JavaScript），但房子已经立起来了！</p>
+                        
+                        <h3>我学到的重点：</h3>
+                        <ul>
+                            <li>标题要用 h1-h6 标签</li>
+                            <li>段落要用 p 标签</li>
+                            <li>图片要用 img 标签</li>
+                        </ul>
+
+                        <blockquote>
+                            “HTML 是网页的基石，没有它，网页就不复存在。”
+                        </blockquote>
+                    </article>
+
+                    <article>
+                        <h2>📅 第二篇：我的爱好</h2>
+                        <p>除了写代码，我还有很多爱好，比如：</p>
+                        <ol>
+                            <li>摄影 📷</li>
+                            <li>徒步旅行 🏔️</li>
+                            <li>阅读 📚</li>
+                        </ol>
+                    </article>
+                </main>
+            </td>
+
+            <!-- 右侧：侧边栏 -->
+            <td width="30%" valign="top" bgcolor="#f0f0f0">
+                <aside>
+                    <h3>关于作者</h3>
+                    <p>一名正在努力学习的前端小白。</p>
+                    
+                    <h3>推荐链接</h3>
+                    <ul>
+                        <li><a href="https://www.example.com" target="_blank">示例网站</a></li>
+                        <li><a href="#">MDN 文档</a></li>
+                    </ul>
+
+                    <h3>图片展示</h3>
+                    <!-- 使用占位图 -->
+                    <img src="https://via.placeholder.com/200x150" alt="占位图片">
+                </aside>
+            </td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <!-- 4. 底部联系表单 -->
+    <section id="contact">
+        <h2>📩 联系我</h2>
+        <p>如果你有技术问题，欢迎留言：</p>
+        <form action="#" method="post">
+            <label for="name">姓名：</label>
+            <input type="text" id="name" name="name"><br><br>
+
+            <label for="email">邮箱：</label>
+            <input type="email" id="email" name="email"><br><br>
+
+            <label for="message">留言：</label><br>
+            <textarea id="message" name="message" rows="4" cols="30"></textarea><br><br>
+
+            <input type="checkbox" id="agree" name="agree">
+            <label for="agree">我同意隐私协议</label><br><br>
+
+            <button type="submit">发送留言</button>
+            <button type="reset">重置</button>
+        </form>
+    </section>
+
+    <hr>
+
+    <!-- 5. 页脚 -->
+    <footer>
+        <p>版权所有 &copy; 2026 张三。保留所有权利。</p>
+        <p>这是一个纯 HTML 制作的页面示例。</p>
+    </footer>
+
+</body>
+</html>
